@@ -93,10 +93,30 @@
         scene.options.forEach(opt => {
             const btn = document.createElement('button');
             btn.innerText = opt.text;
-            btn.onclick = () => renderScene(opt.next);
+
+            if (opt.text.toLowerCase() === 'no') {
+                btn.id = 'runaway-btn';
+                btn.onmouseover = moveButton;
+            } else {
+                btn.onclick = () => renderScene(opt.next);
+            }
+            
             optionsContainer.appendChild(btn);
         });
     }
+
+    function moveButton(){
+        const btn = document.getElementById('runaway-btn');
+        btn.style.position = 'fixed';
+
+        const x = Math.random() * (window.innerWidth - 150);
+        const y = Math.random() * (window.innerHeight - 50);
+
+        btn.style.left = x + 'px';
+        btn.style.top = y + 'px';
+    }
+
+
 </script>
 </body>
 </html>
