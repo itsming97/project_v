@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Adventure</title>
+    <style>
+        :root {
+            --primary: #ff758c;
+            --bg: #f8f9fa;
+        }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--bg);
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; margin: 0; 
+        }
+        .card {
+            background: white;
+            width: 90%; max-width: 600px;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .heart {
+            position: fixed;
+            top: -1vh;
+            user-select: none;
+            pointer-events: none;
+            z-index: 9999;
+            animation: fall 3s linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(360deg);
+            }
+        }
+        .image-container {
+            width: 100%;
+            background: #eee; border-radius: 15px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+        }
+        img { width: 100%; height: auto; display: block; object-fit: contain; }
+        h1 { font-size: 1.5rem; color: #333; margin-bottom: 1rem; }
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        button {
+            padding: 12px;
+            border: none; border-radius: 10px;
+            background: var(--primary);
+            color: white; font-weight: bold;
+            cursor: pointer; transition: 0.2s;
+        }
+        button:hover { background: #ff5e78; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+
+<div class="card" id="game-card">
+    <div class="image-container">
+        <img id="scene-img" src="https://picsum.photos/400/200?romantic=1" alt="Scene">
+    </div>
+    <h1 id="scene-text">Are you ready to start our little journey?</h1>
+    <div class="options" id="scene-options">
+        <button onclick="renderScene('start')">Let's go!</button>
+    </div>
+</div>
+
+<script>
+    const scenes = {
+        start: {
+            text: "It's a sunny Saturday morning. What's the plan?",
+            image: "cy_pup1.jpg",
+            options: [
+                { text: "Breakfast in bed", next: "breakfast" },
+                { text: "Go for a surprise hike", next: "hike" }
+            ]
+        },
+        breakfast: {
+            text: "You chose coffee and pancakes! It smells amazing. Now what?",
+            image: "https://picsum.photos/400/200?coffee",
+            options: [
+                { text: "Watch a movie", next: "valentine" },
+                { text: "Actually, let's go out", next: "hike" }
+            ]
+        },
+        valentine: {
+            text: "Do you want to be my valentine?",
+            image: "https://picsum.photos/400/200?coffee",
+            options: [
+                { text: "Yes", next: "end" },
+                { text: "No", next: "hike" }
+            ]
+        },
+        // Add more scenes here!
+        end: {
+            text: "You win! I love you!",
+            image: "https://picsum.photos/400/200?heart",
+            options: [{ text: "Play Again", next: "start" }]
+        }
+    };
+
+    function renderScene(key) {
+        const scene = scenes[key];
+        document.getElementById('scene-text').innerText = scene.text;
+        document.getElementById('scene-img').src = scene.image;
+        
+        const optionsContainer = document.getElementById('scene-options');
+        optionsContainer.innerHTML = '';
+        
+        if (key == 'end'){
+            sprinkleHearts()
+        }
+
+        scene.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.innerText = opt.text;
+
+            if (opt.text.toLowerCase() === 'no') {
+                btn.id = 'runaway-btn';
+                btn.onmouseover = moveButton;
+            } else {
+                btn.onclick = () => renderScene(opt.next);
+            }
+            
+            optionsContainer.appendChild(btn);
+        });
+    }
+
+    function moveButton(){
+        const btn = document.getElementById('runaway-btn');
+        btn.style.position = 'fixed';
+
+        const x = Math.random() * (window.innerWidth - 150);
+        const y = Math.random() * (window.innerHeight - 50);
+
+        btn.style.left = x + 'px';
+        btn.style.top = y + 'px';
+    }
+
+    function sprinkleHearts(){
+        for (let i = 0; i < 50; i++){
+            setTimeout(() => {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '💖';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                heart.style.opacity = Math.random();
+                document.body.appendChild(heart);
+
+                setTimeout(() => heart.remove(), 3000);
+            }, i * 100);
+        }
+    }
+
+</script>
+</body>
+</html>
