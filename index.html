@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Adventure</title>
+    <style>
+        :root {
+            --primary: #ff758c;
+            --bg: #f8f9fa;
+        }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--bg);
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; margin: 0; 
+        }
+        .card {
+            background: white;
+            width: 90%; max-width: 400px;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .image-container {
+            width: 100%; height: 200px;
+            background: #eee; border-radius: 15px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+        }
+        img { width: 100%; height: 100%; object-fit: cover; }
+        h1 { font-size: 1.5rem; color: #333; margin-bottom: 1rem; }
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        button {
+            padding: 12px;
+            border: none; border-radius: 10px;
+            background: var(--primary);
+            color: white; font-weight: bold;
+            cursor: pointer; transition: 0.2s;
+        }
+        button:hover { background: #ff5e78; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+
+<div class="card" id="game-card">
+    <div class="image-container">
+        <img id="scene-img" src="https://picsum.photos/400/200?romantic=1" alt="Scene">
+    </div>
+    <h1 id="scene-text">Are you ready to start our little journey?</h1>
+    <div class="options" id="scene-options">
+        <button onclick="renderScene('start')">Let's go!</button>
+    </div>
+</div>
+
+<script>
+    const scenes = {
+        start: {
+            text: "It's a sunny Saturday morning. What's the plan?",
+            image: "cy_pup1.jpg",
+            options: [
+                { text: "Breakfast in bed", next: "breakfast" },
+                { text: "Go for a surprise hike", next: "hike" }
+            ]
+        },
+        breakfast: {
+            text: "You chose coffee and pancakes! It smells amazing. Now what?",
+            image: "https://picsum.photos/400/200?coffee",
+            options: [
+                { text: "Watch a movie", next: "movie" },
+                { text: "Actually, let's go out", next: "hike" }
+            ]
+        },
+        // Add more scenes here!
+        end: {
+            text: "You win! I love you!",
+            image: "https://picsum.photos/400/200?heart",
+            options: [{ text: "Play Again", next: "start" }]
+        }
+    };
+
+    function renderScene(key) {
+        const scene = scenes[key];
+        document.getElementById('scene-text').innerText = scene.text;
+        document.getElementById('scene-img').src = scene.image;
+        
+        const optionsContainer = document.getElementById('scene-options');
+        optionsContainer.innerHTML = '';
+        
+        scene.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.innerText = opt.text;
+            btn.onclick = () => renderScene(opt.next);
+            optionsContainer.appendChild(btn);
+        });
+    }
+</script>
+</body>
+</html>
