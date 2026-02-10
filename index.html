@@ -70,8 +70,16 @@
             text: "You chose coffee and pancakes! It smells amazing. Now what?",
             image: "https://picsum.photos/400/200?coffee",
             options: [
-                { text: "Watch a movie", next: "movie" },
+                { text: "Watch a movie", next: "valentine" },
                 { text: "Actually, let's go out", next: "hike" }
+            ]
+        },
+        valentine: {
+            text: "Do you want to be my valentine?",
+            image: "https://picsum.photos/400/200?coffee",
+            options: [
+                { text: "Yes", next: "end" },
+                { text: "No", next: "hike" }
             ]
         },
         // Add more scenes here!
