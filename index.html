@@ -87,8 +87,8 @@
 <script>
     const scenes = {
         page1: {
-            text: "Hey Zi, I have a surprise for you.....",
-            image: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdTFwM29zd2R2OTc1OWltZXZrdGMyeGdieXl2dzUxOGlzd280dWFweCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/MvZJtkjJN81Cgx2X9F/giphy.gifcover.jpg",
+            text: "Hi [Wife's Name], I have a surprise for you...",
+            image: "cover.jpg",
             options: [{ text: "Open It", next: "page2" }]
         },
         page2: {
@@ -120,7 +120,7 @@
             ]
         },
         page6: {
-            text: "I love you! ❤️\nSee you on Friday!",
+            text: "I love you forever! ❤️\nSee you on Friday!",
             image: "end.jpg",
             isFinal: true,
             options: [{ text: "Start Over", next: "page1" }]
@@ -139,44 +139,44 @@
 
         if (scene.isFinal) sprinkleHearts();
 
-        if (scene.isLockbox) {
-            const input = document.createElement('input');
-            input.className = 'lock-input';
-            input.placeholder = "Enter Code...";
-            input.type = "text";
-            
-            // Container for the error message
-            const errorDisplay = document.createElement('div');
-            errorDisplay.id = 'error-msg';
-            
-            const submitBtn = document.createElement('button');
-            submitBtn.innerText = "Unlock";
+    if (scene.isLockbox) {
+        const input = document.createElement('input');
+        input.className = 'lock-input';
+        input.placeholder = "Enter Code...";
+        input.type = "text";
+        
+        // Container for the error message
+        const errorDisplay = document.createElement('div');
+        errorDisplay.id = 'error-msg';
+        
+        const submitBtn = document.createElement('button');
+        submitBtn.innerText = "Unlock";
 
-            submitBtn.onclick = () => {
-                const userInput = input.value.trim().toLowerCase();
-                const correct = scene.correctCode.toLowerCase();
+        submitBtn.onclick = () => {
+            const userInput = input.value.trim().toLowerCase();
+            const correct = scene.correctCode.toLowerCase();
 
-                if (userInput === correct) {
-                    renderScene(scene.next);
-                } else {
-                    // Error Handling Logic
-                    errorDisplay.innerText = "Incorrect code, try again! ❤️";
-                    input.classList.add('shake');
-                    
-                    // Remove the shake class after animation finishes so it can shake again
-                    setTimeout(() => {
-                        input.classList.remove('shake');
-                    }, 400);
-                    
-                    // Clear input after a short delay (optional)
-                    input.value = ""; 
-                }
-            };
+            if (userInput === correct) {
+                renderScene(scene.next);
+            } else {
+                // Error Handling Logic
+                errorDisplay.innerText = "Incorrect code, try again! ❤️";
+                input.classList.add('shake');
+                
+                // Remove the shake class after animation finishes so it can shake again
+                setTimeout(() => {
+                    input.classList.remove('shake');
+                }, 400);
+                
+                // Clear input after a short delay (optional)
+                input.value = ""; 
+            }
+        };
 
-            customContent.appendChild(input);
-            customContent.appendChild(errorDisplay);
-            optionsContainer.appendChild(submitBtn);
-        }
+        customContent.appendChild(input);
+        customContent.appendChild(errorDisplay);
+        optionsContainer.appendChild(submitBtn);
+    }
     }
 
     function moveButton() {
