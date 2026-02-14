@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Special Journey</title>
+    <title>A Special Surprise</title>
     <style>
         :root {
             --primary: #ff758c;
@@ -25,45 +25,41 @@
             text-align: center; transition: opacity 0.4s ease;
         }
 
+        /* Dynamic Image Frame */
         .image-container { width: 100%; margin-bottom: 1.5rem; border-radius: 15px; overflow: hidden; }
         img { width: 100%; height: auto; display: block; object-fit: contain; }
 
-        h1 { font-size: 1.3rem; color: var(--text); margin-bottom: 1.5rem; line-height: 1.6; white-space: pre-wrap; }
+        h1 { font-size: 1.2rem; color: var(--text); margin-bottom: 1.5rem; line-height: 1.6; white-space: pre-wrap; }
 
-        .options { display: flex; flex-direction: column; gap: 12px; }
+        /* The Letter Box for Page 2 */
+        .letter-box {
+            background: #fffafa; border: 1px dashed var(--primary);
+            padding: 20px; border-radius: 15px; margin: 15px 0;
+            font-style: italic; color: #555; line-height: 1.8;
+        }
+
+        /* Buttons and Inputs */
+        .options { display: flex; flex-direction: column; gap: 12px; min-height: 50px; }
         
         button {
             padding: 14px; border: none; border-radius: 12px;
             background: var(--primary); color: white; font-weight: bold;
-            cursor: pointer; transition: 0.2s;
+            cursor: pointer; transition: 0.2s; font-size: 1rem;
         }
         button:hover { background: #ff5e78; transform: scale(1.02); }
 
-        /* Lockbox UI */
         .lock-input {
-            width: 80%; padding: 12px; margin-bottom: 10px;
+            width: 100%; box-sizing: border-box; padding: 12px; margin-bottom: 5px;
             border: 2px solid var(--primary); border-radius: 10px;
             font-size: 1.2rem; text-align: center; outline: none;
         }
 
-        /* Runaway Button */
+        #error-msg { color: #e74c3c; font-size: 0.85rem; margin-bottom: 10px; min-height: 1rem; }
+
+        /* Animations */
         #runaway-btn { background-color: #bdc3c7 !important; transition: all 0.2s ease; z-index: 1000; }
 
-        /* Error message style */
-        #error-msg {
-            color: #e74c3c;
-            font-size: 0.9rem;
-            margin-top: 5px;
-            font-weight: bold;
-            min-height: 1.2rem; /* Keeps layout stable */
-        }
-
-        /* Shake Animation */
-        .shake {
-            animation: shake 0.4s ease-in-out;
-            border-color: #e74c3c !important;
-        }
-
+        .shake { animation: shake 0.4s ease-in-out; border-color: #e74c3c !important; }
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-8px); }
@@ -71,8 +67,7 @@
             75% { transform: translateX(-8px); }
         }
 
-        /* Hearts */
-        .heart { position: fixed; top: -1vh; pointer-events: none; animation: fall 3s linear forwards; }
+        .heart { position: fixed; top: -1vh; pointer-events: none; z-index: 999; animation: fall 3s linear forwards; }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
     </style>
 </head>
@@ -81,49 +76,49 @@
 <div class="card" id="game-card">
     <div class="image-container"><img id="scene-img" src="" alt=""></div>
     <h1 id="scene-text"></h1>
-    <div id="custom-content"></div> <div class="options" id="scene-options"></div>
-</div>
+    <div id="custom-content"></div> <div class="options" id="scene-options"></div> </div>
 
 <script>
     const scenes = {
         page1: {
-            text: "Hi [Wife's Name], I have a surprise for you...",
-            image: "cy_pup1.jpg",
+            text: "Hi [Wife's Name], I made something special for you. Ready?",
+            image: "cover.jpg", // Replace with your GIF or image
             options: [{ text: "Open It", next: "page2" }]
         },
         page2: {
-            text: "Insert your long, beautiful paragraph here.\nYou can use \\n for new lines to make it easy to read!",
+            text: "My Dearest,\n\nYou can write your long paragraph here. It will automatically wrap and look like a beautiful letter in the card!",
             image: "us.jpg",
-            options: [{ text: "Keep Going", next: "page3" }]
+            isLetter: true,
+            options: [{ text: "Next", next: "page3" }]
         },
         page3: {
-            text: "This box is locked! Enter the secret code to proceed.\n(Hint: Maybe a special date or a word?)",
-            image: "lockbox.jpg",
+            text: "Wait! This box is locked.\nOnly my favorite person knows the code!",
+            image: "lock.gif",
             isLockbox: true,
-            correctCode: "1234", // CHANGE THIS CODE
+            correctCode: "1234", // CHANGE THIS TO YOUR CODE
             next: "page4"
         },
         page4: {
             text: "Will you be my Valentine?",
-            image: "valentine.jpg",
+            image: "question.gif",
             options: [
                 { text: "Yes!", next: "page5" },
                 { text: "No", next: "runaway" }
             ]
         },
         page5: {
-            text: "Are you free next Friday for a date? Pick your favorite spot!",
-            image: "dinner.jpg",
+            text: "Are you free next Friday for a date? Pick a place!",
+            image: "date.jpg",
             options: [
-                { text: "Restaurant A (Italian)", next: "page6" },
-                { text: "Restaurant B (Sushi)", next: "page6" }
+                { text: "Restaurant Name A", next: "page6" },
+                { text: "Restaurant Name B", next: "page6" }
             ]
         },
         page6: {
             text: "I love you forever! ❤️\nSee you on Friday!",
-            image: "end.jpg",
+            image: "end.gif",
             isFinal: true,
-            options: [{ text: "Start Over", next: "page1" }]
+            options: [{ text: "Restart", next: "page1" }]
         }
     };
 
@@ -131,67 +126,84 @@
         const scene = scenes[key];
         const optionsContainer = document.getElementById('scene-options');
         const customContent = document.getElementById('custom-content');
+        const textElement = document.getElementById('scene-text');
         
-        document.getElementById('scene-text').innerText = scene.text;
-        document.getElementById('scene-img').src = scene.image;
+        // Reset everything
         optionsContainer.innerHTML = '';
         customContent.innerHTML = '';
+        
+        // Handle Images
+        document.getElementById('scene-img').src = scene.image;
 
+        // Handle Victory Hearts
         if (scene.isFinal) sprinkleHearts();
 
+        // Handle Text Layout (Letter vs Normal)
+        if (scene.isLetter) {
+            textElement.innerHTML = `<div class="letter-box">${scene.text}</div>`;
+        } else {
+            textElement.innerText = scene.text;
+        }
+
+        // Handle Lockbox Logic
         if (scene.isLockbox) {
             const input = document.createElement('input');
             input.className = 'lock-input';
-            input.placeholder = "Enter Code...";
-            input.type = "text";
+            input.placeholder = "Enter the code...";
             
-            // Container for the error message
-            const errorDisplay = document.createElement('div');
-            errorDisplay.id = 'error-msg';
-            
-            const submitBtn = document.createElement('button');
-            submitBtn.innerText = "Unlock";
+            const errorDiv = document.createElement('div');
+            errorDiv.id = 'error-msg';
 
-            submitBtn.onclick = () => {
-                const userInput = input.value.trim().toLowerCase();
-                const correct = scene.correctCode.toLowerCase();
-
-                if (userInput === correct) {
+            const unlockBtn = document.createElement('button');
+            unlockBtn.innerText = "Unlock";
+            unlockBtn.onclick = () => {
+                if (input.value.trim().toLowerCase() === scene.correctCode.toLowerCase()) {
                     renderScene(scene.next);
                 } else {
-                    // Error Handling Logic
-                    errorDisplay.innerText = "Incorrect code, try again! ❤️";
+                    errorDiv.innerText = "Wrong code! Try again ❤️";
                     input.classList.add('shake');
-                    
-                    // Remove the shake class after animation finishes so it can shake again
-                    setTimeout(() => {
-                        input.classList.remove('shake');
-                    }, 400);
-                    
-                    // Clear input after a short delay (optional)
-                    input.value = ""; 
+                    setTimeout(() => input.classList.remove('shake'), 400);
+                    input.value = "";
                 }
             };
 
             customContent.appendChild(input);
-            customContent.appendChild(errorDisplay);
-            optionsContainer.appendChild(submitBtn);
+            customContent.appendChild(errorDiv);
+            optionsContainer.appendChild(unlockBtn);
+
+        } else {
+            // Handle Normal Buttons
+            scene.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.innerText = opt.text;
+                
+                if (opt.text.toLowerCase() === 'no') {
+                    btn.id = 'runaway-btn';
+                    btn.onmouseover = moveButton;
+                    btn.onclick = moveButton; // For mobile
+                } else {
+                    btn.onclick = () => renderScene(opt.next);
+                }
+                optionsContainer.appendChild(btn);
+            });
         }
     }
 
     function moveButton() {
         const btn = document.getElementById('runaway-btn');
         btn.style.position = 'fixed';
-        btn.style.left = Math.random() * (window.innerWidth - 100) + 'px';
-        btn.style.top = Math.random() * (window.innerHeight - 50) + 'px';
+        const x = Math.random() * (window.innerWidth - 120);
+        const y = Math.random() * (window.innerHeight - 50);
+        btn.style.left = x + 'px';
+        btn.style.top = y + 'px';
     }
 
     function sprinkleHearts() {
-        for (let i = 0; i < 40; i++) {
+        for (let i = 0; i < 50; i++) {
             setTimeout(() => {
                 const heart = document.createElement('div');
                 heart.className = 'heart';
-                heart.innerHTML = '💖';
+                heart.innerHTML = ['💖','💗','❤️','💕'][Math.floor(Math.random()*4)];
                 heart.style.left = Math.random() * 100 + 'vw';
                 heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
                 document.body.appendChild(heart);
@@ -200,7 +212,9 @@
         }
     }
 
+    // Initialize Game
     renderScene('page1');
 </script>
+
 </body>
 </html>
