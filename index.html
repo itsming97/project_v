@@ -87,8 +87,8 @@
 <script>
     const scenes = {
         page1: {
-            text: "Hi [Wife's Name], I have a surprise for you...",
-            image: "cover.jpg",
+            text: "Hey Zi, I have a surprise for you...",
+            image: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdTFwM29zd2R2OTc1OWltZXZrdGMyeGdieXl2dzUxOGlzd280dWFweCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/MvZJtkjJN81Cgx2X9F/giphy.gifcover.jpg",
             options: [{ text: "Open It", next: "page2" }]
         },
         page2: {
@@ -120,9 +120,10 @@
             ]
         },
         page6: {
-            text: "I love you forever! ❤️\nSee you on Friday!",
+            text: "I love you! ❤️\nSee you on Friday!",
             image: "end.jpg",
             isFinal: true,
+            options: [{ text: "Start Over", next: "page1" }]
         }
     };
 
