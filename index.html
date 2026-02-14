@@ -139,44 +139,44 @@
 
         if (scene.isFinal) sprinkleHearts();
 
-    if (scene.isLockbox) {
-        const input = document.createElement('input');
-        input.className = 'lock-input';
-        input.placeholder = "Enter Code...";
-        input.type = "text";
-        
-        // Container for the error message
-        const errorDisplay = document.createElement('div');
-        errorDisplay.id = 'error-msg';
-        
-        const submitBtn = document.createElement('button');
-        submitBtn.innerText = "Unlock";
+        if (scene.isLockbox) {
+            const input = document.createElement('input');
+            input.className = 'lock-input';
+            input.placeholder = "Enter Code...";
+            input.type = "text";
+            
+            // Container for the error message
+            const errorDisplay = document.createElement('div');
+            errorDisplay.id = 'error-msg';
+            
+            const submitBtn = document.createElement('button');
+            submitBtn.innerText = "Unlock";
 
-        submitBtn.onclick = () => {
-            const userInput = input.value.trim().toLowerCase();
-            const correct = scene.correctCode.toLowerCase();
+            submitBtn.onclick = () => {
+                const userInput = input.value.trim().toLowerCase();
+                const correct = scene.correctCode.toLowerCase();
 
-            if (userInput === correct) {
-                renderScene(scene.next);
-            } else {
-                // Error Handling Logic
-                errorDisplay.innerText = "Incorrect code, try again! ❤️";
-                input.classList.add('shake');
-                
-                // Remove the shake class after animation finishes so it can shake again
-                setTimeout(() => {
-                    input.classList.remove('shake');
-                }, 400);
-                
-                // Clear input after a short delay (optional)
-                input.value = ""; 
-            }
-        };
+                if (userInput === correct) {
+                    renderScene(scene.next);
+                } else {
+                    // Error Handling Logic
+                    errorDisplay.innerText = "Incorrect code, try again! ❤️";
+                    input.classList.add('shake');
+                    
+                    // Remove the shake class after animation finishes so it can shake again
+                    setTimeout(() => {
+                        input.classList.remove('shake');
+                    }, 400);
+                    
+                    // Clear input after a short delay (optional)
+                    input.value = ""; 
+                }
+            };
 
-        customContent.appendChild(input);
-        customContent.appendChild(errorDisplay);
-        optionsContainer.appendChild(submitBtn);
-    }
+            customContent.appendChild(input);
+            customContent.appendChild(errorDisplay);
+            optionsContainer.appendChild(submitBtn);
+        }
     }
 
     function moveButton() {
