@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Special Adventure</title>
+    <title>A Special Journey</title>
     <style>
         :root {
             --primary: #ff758c;
@@ -18,243 +18,151 @@
             min-height: 100vh; margin: 0; overflow-x: hidden;
         }
 
-        /* The Game Card */
         .card {
-            background: white;
-            width: 90%; 
-            max-width: 500px;
-            padding: 2rem;
-            border-radius: 25px;
+            background: white; width: 90%; max-width: 500px;
+            padding: 2rem; border-radius: 25px;
             box-shadow: 0 15px 35px rgba(255, 117, 140, 0.2);
-            text-align: center;
-            transition: opacity 0.4s ease; /* For smooth scene transitions */
+            text-align: center; transition: opacity 0.4s ease;
         }
 
-        /* Dynamic Image Frame */
-        .image-container {
-            width: 100%;
-            margin-bottom: 1.5rem;
-            border-radius: 15px;
-            overflow: hidden;
-            display: block;
-        }
+        .image-container { width: 100%; margin-bottom: 1.5rem; border-radius: 15px; overflow: hidden; }
+        img { width: 100%; height: auto; display: block; object-fit: contain; }
 
-        img { 
-            width: 100%; 
-            height: auto; 
-            display: block;
-            object-fit: contain;
-        }
+        h1 { font-size: 1.3rem; color: var(--text); margin-bottom: 1.5rem; line-height: 1.6; white-space: pre-wrap; }
 
-        h1 { font-size: 1.4rem; color: var(--text); margin-bottom: 1.5rem; line-height: 1.4; }
-
-        /* Buttons */
         .options { display: flex; flex-direction: column; gap: 12px; }
         
         button {
-            padding: 14px;
-            border: none; border-radius: 12px;
-            background: var(--primary);
-            color: white; font-weight: bold; font-size: 1rem;
-            cursor: pointer; transition: transform 0.2s, background 0.2s;
+            padding: 14px; border: none; border-radius: 12px;
+            background: var(--primary); color: white; font-weight: bold;
+            cursor: pointer; transition: 0.2s;
         }
-
         button:hover { background: #ff5e78; transform: scale(1.02); }
 
-        /* The Runaway Button */
-        #runaway-btn {
-            background-color: #bdc3c7 !important;
-            transition: all 0.2s ease;
-            z-index: 1000;
+        /* Lockbox UI */
+        .lock-input {
+            width: 80%; padding: 12px; margin-bottom: 10px;
+            border: 2px solid var(--primary); border-radius: 10px;
+            font-size: 1.2rem; text-align: center; outline: none;
         }
 
-        /* Word Search Grid */
-        .word-grid {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 4px;
-            margin: 15px auto;
-            max-width: 100%;
-        }
+        /* Runaway Button */
+        #runaway-btn { background-color: #bdc3c7 !important; transition: all 0.2s ease; z-index: 1000; }
 
-        .cell {
-            aspect-ratio: 1;
-            display: flex; align-items: center; justify-content: center;
-            background: #fff; border: 1px solid var(--primary);
-            border-radius: 4px; font-weight: bold; font-size: 0.9rem; cursor: pointer;
-        }
-
-        .cell.selected { background: var(--primary); color: white; }
-
-        /* Falling Hearts Effect */
-        .heart {
-            position: fixed; top: -1vh; user-select: none; pointer-events: none;
-            z-index: 9999; animation: fall 3s linear forwards;
-        }
-
-        @keyframes fall {
-            to { transform: translateY(110vh) rotate(360deg); }
-        }
+        /* Hearts */
+        .heart { position: fixed; top: -1vh; pointer-events: none; animation: fall 3s linear forwards; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
     </style>
 </head>
 <body>
 
 <div class="card" id="game-card">
-    <div class="image-container">
-        <img id="scene-img" src="" alt="Scene">
-    </div>
+    <div class="image-container"><img id="scene-img" src="" alt=""></div>
     <h1 id="scene-text"></h1>
-    <div class="options" id="scene-options"></div>
+    <div id="custom-content"></div> <div class="options" id="scene-options"></div>
 </div>
 
 <script>
-    // --- YOUR DATA (THE STORY) ---
     const scenes = {
-        start: {
-            text: "Welcome to your little adventure! Ready to begin?",
-            image: "https://picsum.photos/600/400?love",
+        page1: {
+            text: "Hi [Wife's Name], I have a surprise for you...",
+            image: "cover.jpg",
+            options: [{ text: "Open It", next: "page2" }]
+        },
+        page2: {
+            text: "Insert your long, beautiful paragraph here.\nYou can use \\n for new lines to make it easy to read!",
+            image: "us.jpg",
+            options: [{ text: "Keep Going", next: "page3" }]
+        },
+        page3: {
+            text: "This box is locked! Enter the secret code to proceed.\n(Hint: Maybe a special date or a word?)",
+            image: "lockbox.jpg",
+            isLockbox: true,
+            correctCode: "1234", // CHANGE THIS CODE
+            next: "page4"
+        },
+        page4: {
+            text: "Will you be my Valentine?",
+            image: "valentine.jpg",
             options: [
-                { text: "Yes, let's go!", next: "puzzles" }
+                { text: "Yes!", next: "page5" },
+                { text: "No", next: "runaway" }
             ]
         },
-        puzzles: {
-            text: "Find the hidden word 'LOVE' in the grid below!",
-            image: "https://picsum.photos/600/400?puzzle",
-            isWordGame: true,
-            targetWord: "LOVE",
-            next: "the_question"
-        },
-        the_question: {
-            text: "Final question: Will you be my Player 2 forever?",
-            image: "https://picsum.photos/600/400?wedding",
+        page5: {
+            text: "Are you free next Friday for a date? Pick your favorite spot!",
+            image: "dinner.jpg",
             options: [
-                { text: "Yes", next: "victory" },
-                { text: "No", next: "runaway" } 
+                { text: "Restaurant A (Italian)", next: "page6" },
+                { text: "Restaurant B (Sushi)", next: "page6" }
             ]
         },
-        victory: {
-            text: "Yay! I love you so much! ❤️",
-            image: "https://picsum.photos/600/400?hearts",
-            options: [{ text: "Play Again", next: "start" }]
+        page6: {
+            text: "I love you forever! ❤️\nSee you on Friday!",
+            image: "end.jpg",
+            isFinal: true,
+            options: [{ text: "Start Over", next: "page1" }]
         }
     };
 
-    // --- GAME ENGINE ---
     function renderScene(key) {
-        const card = document.getElementById('game-card');
         const scene = scenes[key];
+        const optionsContainer = document.getElementById('scene-options');
+        const customContent = document.getElementById('custom-content');
         
-        // Trigger hearts on victory
-        if (key === 'victory') sprinkleHearts();
+        document.getElementById('scene-text').innerText = scene.text;
+        document.getElementById('scene-img').src = scene.image;
+        optionsContainer.innerHTML = '';
+        customContent.innerHTML = '';
 
-        // Smooth transition
-        card.style.opacity = 0;
+        if (scene.isFinal) sprinkleHearts();
 
-        setTimeout(() => {
-            document.getElementById('scene-text').innerText = scene.text;
-            document.getElementById('scene-img').src = scene.image;
-            const optionsContainer = document.getElementById('scene-options');
-            optionsContainer.innerHTML = '';
-
-            if (scene.isWordGame) {
-                createWordGame(scene.targetWord, scene.next);
-            } else {
-                scene.options.forEach(opt => {
-                    const btn = document.createElement('button');
-                    btn.innerText = opt.text;
-                    
-                    if (opt.text.toLowerCase() === 'no') {
-                        btn.id = 'runaway-btn';
-                        btn.onmouseover = moveButton;
-                        btn.onclick = moveButton; // For mobile
-                    } else {
-                        btn.onclick = () => renderScene(opt.next);
-                    }
-                    optionsContainer.appendChild(btn);
-                });
-            }
-            card.style.opacity = 1;
-        }, 400);
+        if (scene.isLockbox) {
+            const input = document.createElement('input');
+            input.className = 'lock-input';
+            input.placeholder = "Enter Code...";
+            input.type = "text";
+            
+            const submitBtn = document.createElement('button');
+            submitBtn.innerText = "Unlock";
+            submitBtn.onclick = () => {
+                if (input.value.toLowerCase() === scene.correctCode.toLowerCase()) {
+                    renderScene(scene.next);
+                } else {
+                    alert("Wrong code! Try again ❤️");
+                }
+            };
+            customContent.appendChild(input);
+            optionsContainer.appendChild(submitBtn);
+        } else {
+            scene.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.innerText = opt.text;
+                if (opt.text.toLowerCase() === 'no') {
+                    btn.id = 'runaway-btn';
+                    btn.onmouseover = moveButton;
+                    btn.onclick = moveButton;
+                } else {
+                    btn.onclick = () => renderScene(opt.next);
+                }
+                optionsContainer.appendChild(btn);
+            });
+        }
     }
 
-    // --- FEATURE: RUNAWAY BUTTON ---
     function moveButton() {
         const btn = document.getElementById('runaway-btn');
         btn.style.position = 'fixed';
-        const x = Math.random() * (window.innerWidth - 120);
-        const y = Math.random() * (window.innerHeight - 50);
-        btn.style.left = x + 'px';
-        btn.style.top = y + 'px';
+        btn.style.left = Math.random() * (window.innerWidth - 100) + 'px';
+        btn.style.top = Math.random() * (window.innerHeight - 50) + 'px';
     }
 
-    // --- FEATURE: WORD SEARCH ---
-    function createWordGame(target, nextKey) {
-        const container = document.getElementById('scene-options');
-        const grid = document.createElement('div');
-        grid.className = 'word-grid';
-        
-        // 1. Create a 10x10 empty grid (represented as a 1D array of 100 elements)
-        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        let gridArray = Array(100).fill(null);
-        
-        // 2. Decide Direction (0 = Horizontal, 1 = Vertical)
-        const direction = Math.floor(Math.random() * 2);
-        const wordLen = target.length;
-        let startPos;
-
-        if (direction === 0) { 
-            // Horizontal: Ensure it doesn't wrap to the next line
-            // Random row (0-9), random start col (0 to 10-wordLen)
-            const row = Math.floor(Math.random() * 10);
-            const col = Math.floor(Math.random() * (11 - wordLen));
-            startPos = (row * 10) + col;
-        } else { 
-            // Vertical: Ensure it doesn't go off the bottom
-            // Random col (0-9), random start row (0 to 10-wordLen)
-            const col = Math.floor(Math.random() * 10);
-            const row = Math.floor(Math.random() * (11 - wordLen));
-            startPos = (row * 10) + col;
-        }
-
-        // 3. Place the target word
-        for (let i = 0; i < wordLen; i++) {
-            const index = (direction === 0) ? (startPos + i) : (startPos + (i * 10));
-            gridArray[index] = target[i];
-        }
-
-        // 4. Fill the remaining nulls with random letters
-        gridArray = gridArray.map(char => char || letters[Math.floor(Math.random() * 26)]);
-
-        // 5. Render to UI
-        gridArray.forEach((char) => {
-            const cell = document.createElement('div');
-            cell.className = 'cell';
-            cell.innerText = char;
-            cell.onclick = () => {
-                cell.classList.toggle('selected');
-                
-                // Check if the current selection matches the target
-                const selected = document.querySelectorAll('.cell.selected');
-                const currentWord = Array.from(selected).map(c => c.innerText).join('');
-                
-                // Note: This check works if she clicks the letters in the correct order
-                if (currentWord === target) {
-                    renderScene(nextKey);
-                }
-            };
-            grid.appendChild(cell);
-        });
-        
-        container.appendChild(grid);
-    }
-
-    // --- FEATURE: HEARTS ---
     function sprinkleHearts() {
         for (let i = 0; i < 40; i++) {
             setTimeout(() => {
                 const heart = document.createElement('div');
                 heart.className = 'heart';
-                heart.innerHTML = ['💖','💗','❤️','💕'][Math.floor(Math.random()*4)];
+                heart.innerHTML = '💖';
                 heart.style.left = Math.random() * 100 + 'vw';
                 heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
                 document.body.appendChild(heart);
@@ -263,9 +171,7 @@
         }
     }
 
-    // Initialize Game
-    renderScene('start');
+    renderScene('page1');
 </script>
-
 </body>
 </html>
