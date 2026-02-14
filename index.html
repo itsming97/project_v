@@ -219,23 +219,40 @@
             optionsContainer.appendChild(unlockBtn);
 
             } else {
-            // Handle Normal Buttons
-            scene.options.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.innerText = opt.text;
-                
-                if (opt.text.toLowerCase() === 'no') {
-                    btn.id = 'runaway-btn';
-                    btn.onmouseover = moveButton;
-                    btn.onclick = moveButton; // For mobile
-                } else {
-                    btn.onclick = () => renderScene(opt.next);
-                }
-                optionsContainer.appendChild(btn);
-            });
-        }
-    }
+                // Check if we should use the Photo Grid or regular buttons
+                if (scene.isPhotoChoice) {
+                    const grid = document.createElement('div');
+                    grid.className = 'photo-options';
 
+                    scene.options.forEach(opt => {
+                        const div = document.createElement('div');
+                        div.className = 'photo-choice';
+                        div.onclick = () => renderScene(opt.next);
+
+                        div.innerHTML = `
+                            <img src="${opt.image}" class="choice-img">
+                            <span class="choice-caption">${opt.text}</span>
+                        `;
+                        grid.appendChild(div);
+                    });
+                    optionsContainer.appendChild(grid);
+                } else {
+                    // Handle Normal Buttons (existing logic)
+                    scene.options.forEach(opt => {
+                        const btn = document.createElement('button');
+                        btn.innerText = opt.text;
+                        if (opt.text.toLowerCase() === 'no') {
+                            btn.id = 'runaway-btn';
+                            btn.onmouseover = moveButton;
+                            btn.onclick = moveButton;
+                        } else {
+                            btn.onclick = () => renderScene(opt.next);
+                        }
+                        optionsContainer.appendChild(btn);
+                    });
+                }
+            }
+        }
     function moveButton() {
         const btn = document.getElementById('runaway-btn');
         btn.style.position = 'fixed';
