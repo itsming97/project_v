@@ -49,6 +49,28 @@
         /* Runaway Button */
         #runaway-btn { background-color: #bdc3c7 !important; transition: all 0.2s ease; z-index: 1000; }
 
+        /* Error message style */
+        #error-msg {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            font-weight: bold;
+            min-height: 1.2rem; /* Keeps layout stable */
+        }
+
+        /* Shake Animation */
+        .shake {
+            animation: shake 0.4s ease-in-out;
+            border-color: #e74c3c !important;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            50% { transform: translateX(8px); }
+            75% { transform: translateX(-8px); }
+        }
+
         /* Hearts */
         .heart { position: fixed; top: -1vh; pointer-events: none; animation: fall 3s linear forwards; }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
@@ -123,30 +145,37 @@
             input.placeholder = "Enter Code...";
             input.type = "text";
             
+            // Container for the error message
+            const errorDisplay = document.createElement('div');
+            errorDisplay.id = 'error-msg';
+            
             const submitBtn = document.createElement('button');
             submitBtn.innerText = "Unlock";
+
             submitBtn.onclick = () => {
-                if (input.value.toLowerCase() === scene.correctCode.toLowerCase()) {
+                const userInput = input.value.trim().toLowerCase();
+                const correct = scene.correctCode.toLowerCase();
+
+                if (userInput === correct) {
                     renderScene(scene.next);
                 } else {
-                    alert("Wrong code! Try again ❤️");
+                    // Error Handling Logic
+                    errorDisplay.innerText = "Incorrect code, try again! ❤️";
+                    input.classList.add('shake');
+                    
+                    // Remove the shake class after animation finishes so it can shake again
+                    setTimeout(() => {
+                        input.classList.remove('shake');
+                    }, 400);
+                    
+                    // Clear input after a short delay (optional)
+                    input.value = ""; 
                 }
             };
+
             customContent.appendChild(input);
+            customContent.appendChild(errorDisplay);
             optionsContainer.appendChild(submitBtn);
-        } else {
-            scene.options.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.innerText = opt.text;
-                if (opt.text.toLowerCase() === 'no') {
-                    btn.id = 'runaway-btn';
-                    btn.onmouseover = moveButton;
-                    btn.onclick = moveButton;
-                } else {
-                    btn.onclick = () => renderScene(opt.next);
-                }
-                optionsContainer.appendChild(btn);
-            });
         }
     }
 
