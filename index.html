@@ -62,35 +62,31 @@
             margin-top: 10px;
         }
 
-        .photo-choice {
-            background: white;
-            border: 2px solid var(--primary);
-            border-radius: 15px;
-            padding: 10px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .photo-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
         }
 
-        .photo-choice:hover {
-            transform: scale(1.05);
-            background: var(--bg);
+        .photo-choice {
+            border: 2px solid var(--primary);
+            border-radius: 15px;
+            padding: 8px;
+            cursor: pointer;
         }
 
         .choice-img {
             width: 100%;
-            aspect-ratio: 1; /* Makes it a square */
+            height: 120px; /* Force a height so it shows up */
             object-fit: cover;
             border-radius: 10px;
-            margin-bottom: 8px;
         }
 
         .choice-caption {
-            font-size: 0.9rem;
+            margin-top: 5px;
+            font-size: 0.8rem;
             font-weight: bold;
-            color: var(--text);
         }
 
         #error-msg { color: #e74c3c; font-size: 0.85rem; margin-bottom: 10px; min-height: 1rem; }
@@ -148,6 +144,7 @@
         page5: {
             text: "Are you free next Friday for a date? Pick a place!",
             image: "anime.jpg",
+            isPhotoChoice: true,
             options: [
                 {
                     text: "New School",
@@ -219,39 +216,46 @@
             optionsContainer.appendChild(unlockBtn);
 
             } else {
-                // Check if we should use the Photo Grid or regular buttons
-                if (scene.isPhotoChoice) {
-                    const grid = document.createElement('div');
-                    grid.className = 'photo-options';
+        // --- NEW LOGIC FOR PHOTO CHOICES ---
+        if (scene.isPhotoChoice) {
+            const grid = document.createElement('div');
+            grid.className = 'photo-options';
 
-                    scene.options.forEach(opt => {
-                        const div = document.createElement('div');
-                        div.className = 'photo-choice';
-                        div.onclick = () => renderScene(opt.next);
+            scene.options.forEach(opt => {
+                const choiceDiv = document.createElement('div');
+                choiceDiv.className = 'photo-choice';
+                
+                // This updates the final page text dynamically!
+                choiceDiv.onclick = () => {
+                    scenes.page6.text = `I love you forever! ❤️\nSee you on Friday for ${opt.text}!`;
+                    renderScene(opt.next);
+                };
 
-                        div.innerHTML = `
-                            <img src="${opt.image}" class="choice-img">
-                            <span class="choice-caption">${opt.text}</span>
-                        `;
-                        grid.appendChild(div);
-                    });
-                    optionsContainer.appendChild(grid);
+                choiceDiv.innerHTML = `
+                    <img src="${opt.image}" class="choice-img">
+                    <div class="choice-caption">${opt.text}</div>
+                `;
+                grid.appendChild(choiceDiv);
+            });
+            optionsContainer.appendChild(grid);
+        } 
+        // --- NORMAL BUTTON LOGIC ---
+        else if (scene.options) {
+            scene.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.innerText = opt.text;
+                
+                if (opt.text.toLowerCase() === 'no') {
+                    btn.id = 'runaway-btn';
+                    btn.onmouseover = moveButton;
+                    btn.onclick = moveButton;
                 } else {
-                    // Handle Normal Buttons (existing logic)
-                    scene.options.forEach(opt => {
-                        const btn = document.createElement('button');
-                        btn.innerText = opt.text;
-                        if (opt.text.toLowerCase() === 'no') {
-                            btn.id = 'runaway-btn';
-                            btn.onmouseover = moveButton;
-                            btn.onclick = moveButton;
-                        } else {
-                            btn.onclick = () => renderScene(opt.next);
-                        }
-                        optionsContainer.appendChild(btn);
-                    });
+                    btn.onclick = () => renderScene(opt.next);
                 }
-            }
+                optionsContainer.appendChild(btn);
+            });
+        }
+    }
         }
     function moveButton() {
         const btn = document.getElementById('runaway-btn');
